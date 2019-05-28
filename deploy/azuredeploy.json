@@ -1,0 +1,102 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "Resource.Name": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of Azure Container Instance to create"
+            }
+        },
+        "Container.Name": {
+            "type": "string",
+            "defaultValue": "azure-devops-agent",
+            "metadata": {
+                "description": "Name of container inside the Azure Container Instance"
+            }
+        },
+        "Container.Resources.NumberCpuCores": {
+            "type": "string",
+            "defaultValue": "1",
+            "metadata": {
+                "description": "Requested amount of CPU Cores to assign to container, ie 1"
+            }
+        },
+        "Container.Resources.Memory": {
+            "type": "string",
+            "defaultValue": "1.5",
+            "metadata": {
+                "description": "Requested amount of memory to assign to container, ie 1.5"
+            }
+        },
+        "Organisation.Name": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of Azure DevOps organization"
+            }
+        },
+        "Auth.PAT": {
+            "type": "securestring",
+            "metadata": {
+                "description": "PAT token which required permissions, see https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-windows?view=azure-devops#permissions"
+            }
+        },
+        "Pool.Name": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of Agent Pool to which it will belong"
+            }
+        },
+        "Agent.Name": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of Azure DevOps Agent to use"
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2018-04-01",
+            "name": "[parameters('Resource.Name')]",
+            "location": "westeurope",
+            "properties": {
+                "containers": [
+                    {
+                        "name": "[parameters('Container.Name')]",
+                        "properties": {
+                            "image": "tomkerkhove/azure-devops-agent:ubuntu-1604",
+                            "environmentVariables": [
+                                {
+                                    "name": "AZP_URL",
+                                    "value": "[concat('https://dev.azure.com/', parameters('Organisation.Name'))]"
+                                },
+                                {
+                                    "name": "AZP_TOKEN",
+                                    "value": "[parameters('Auth.PAT')]"
+                                },
+                                {
+                                    "name": "AZP_POOL",
+                                    "value": "[parameters('Pool.Name')]"
+                                },
+                                {
+                                    "name": "AZP_AGENT_NAME",
+                                    "value": "[parameters('Agent.Name')]"
+                                }
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "cpu": "[int(parameters('Container.Resources.NumberCpuCores'))]",
+                                    "memoryInGB": "[float(parameters('Container.Resources.Memory'))]"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "restartPolicy": "OnFailure",
+                "osType": "Linux"
+            }
+        }
+    ]
+}
