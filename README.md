@@ -5,6 +5,8 @@
 # Azure DevOps Agent running in Docker
 Docker image running the Azure DevOps Agent based on [official docs](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops).
 
+[![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/?repository=https://github.com/tomkerkhove/azure-devops-agent-in-docker)
+
 ## Running agent in Docker
 
 ```shell
