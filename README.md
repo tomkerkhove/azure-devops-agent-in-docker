@@ -1,3 +1,7 @@
+| :mega: Do not use for Production |
+|----------------------------------|
+| This Docker image was quickly created based on the official documentation in order to run on Azure Container Instances. Do not run this in production environments.        |
+
 # Azure DevOps Agent running in Docker
 Docker image running the Azure DevOps Agent based on [official docs](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops).
 
